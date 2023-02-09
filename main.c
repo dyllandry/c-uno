@@ -8,6 +8,20 @@ enum Color {
 	yellow,
 };
 
+char *ColorLabel(enum Color color) {
+	if (color == blue) {
+		return "blue";
+	} else if (color == red) {
+		return "red";
+	} else if (color == green) {
+		return "green";
+	} else if (color == yellow) {
+		return "yellow";
+	} else {
+		return "";
+	}
+}
+
 enum CardType {
 	number,
 	skip,
@@ -16,6 +30,24 @@ enum CardType {
 	wild,
 	wildDraw4,
 };
+
+char *CardTypeLabel(enum CardType type) {
+	if (type == number) {
+		return "number";
+	} else if (type == skip) {
+		return "skip";
+	} else if (type == reverse) {
+		return "reverse";
+	} else if (type == draw2) {
+		return "draw 2";
+	} else if (type == wild) {
+		return "wild";
+	} else if (type == wildDraw4) {
+		return "wild draw 4";
+	} else {
+		return "";
+	}
+}
 
 struct Card {
 	enum CardType type;
@@ -73,19 +105,17 @@ void FillCards(struct Card *cards) {
 
 void PrintCards(struct Card *cards) {
 	printf("Here's what we have in our cards...\n");
-	printf("type\tcolor\tnumber\n");
 	for (int i = 0; i < 108; i++) {
 		struct Card *card = &cards[i];
-		printf("%i\t", card->type);
+		printf("Card #%i: ", i+1);
 		if (card->color != 0) {
-			printf("%i\t", *card->color);
-		} else {
-			printf("none\t");
+			printf("%s ", ColorLabel(*card->color));
+		}
+		if (card->type != number) {
+			printf("%s ", CardTypeLabel(card->type));
 		}
 		if(card->number != 0) {
-			printf("%i\t", *card->number);
-		} else {
-			printf("none\t");
+			printf("%i", *card->number);
 		}
 		printf("\n");
 	}
