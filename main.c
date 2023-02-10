@@ -23,7 +23,7 @@ char *ColorLabel(enum Color color) {
 }
 
 enum CardType {
-	number,
+	numbered,
 	skip,
 	reverse,
 	draw2,
@@ -32,7 +32,7 @@ enum CardType {
 };
 
 char *CardTypeLabel(enum CardType type) {
-	if (type == number) {
+	if (type == numbered) {
 		return "number";
 	} else if (type == skip) {
 		return "skip";
@@ -49,12 +49,36 @@ char *CardTypeLabel(enum CardType type) {
 	}
 }
 
+struct NumberedCardContent {
+	int number;
+	enum Color color;
+};
+
+struct SkipCardContent {
+	enum Color color;
+};
+
+struct ReverseCardContent {
+	enum Color color;
+};
+
+struct Draw2CardContent {
+	enum Color color;
+};
+
+struct NoCardContent {
+	int nothing;
+};
+
 struct Card {
 	enum CardType type;
-	// Null unless card type is number.
-	int *number;
-	// Null unless card type is one of number, skip, reverse, or draw2.
-	enum Color *color;
+	union {
+		struct NumberedCardContent numbered;
+		struct SkipCardContent skip;
+		struct ReverseCardContent reverse;
+		struct Draw2CardContent draw2;
+		struct NoCardContent none;
+	} content;
 };
 
 /**
@@ -62,43 +86,33 @@ struct Card {
  */
 void FillCards(struct Card *cards) {
 	for (int i = 0; i < 108; i++) {
-		struct Card *card = &cards[i];
-		card->number = 0;
-		card->color = 0;
-
 		// An UNO deck has 108 cards in total.
-		// Cards 1-76: 76 colored & numbered cards
-		// Cards 77-84: 8 colored skip cards
-		// Cards 85-92: 8 colored reverse cards
-		// Cards 93-100: 8 colored draw 2 cards
-		// Cards 101-104: 4 wild cards
-		// Cards 105-108: 4 wild draw 4 cards
-
-		// Cards 1-100 are colored.
-		if (i < 100) {
-			card->color = malloc(sizeof card->color);
-		}
-
-		// Of the 76 colored & numbered cards, there are 19 of each color. These
-		// are numbered 0-9, with each color having one 0 and two of 1-9.
 		if (i < 76) {
-			card->type = number;
-			card->number = malloc(sizeof card->number);
-			*card->number = (i % 19 + 1) / 2;
-			*card->color = i / 19;
+			// Cards 1-76: 76 colored & numbered cards There are 19 of each color.
+			// These are numbered 0-9, with each color having one 0 and two of 1-9.
+			cards[i].type = numbered;
+			cards[i].content.numbered.number = ((i % 19) + 1 ) / 2;
+			cards[i].content.numbered.color = i / 19;
 		} else if (i < 84) {
-			*card->color = (i % 4);
-			card->type = skip;
+			// Cards 77-84: 8 colored skip cards
+			cards[i].type = skip;
+			cards[i].content.skip.color = (i - 76) / 2;
 		} else if (i < 92) {
-			*card->color = (i % 4);
-			card->type = reverse;
+			// Cards 85-92: 8 colored reverse cards
+			cards[i].type = reverse;
+			cards[i].content.reverse.color = (i - 84) / 2;
 		} else if (i < 100) {
-			*card->color = (i % 4);
-			card->type = draw2;
+			// Cards 93-100: 8 colored draw 2 cards
+			cards[i].type = draw2;
+			cards[i].content.draw2.color = (i - 92) / 2;
 		} else if (i < 104) {
-			card->type = wild;
+			// Cards 101-104: 4 wild cards
+			cards[i].type = wild;
+			cards[i].content.none.nothing = 0;
 		} else if (i < 108) {
-			card->type = wildDraw4;
+			// Cards 105-108: 4 wild draw 4 cards
+			cards[i].type = wildDraw4;
+			cards[i].content.none.nothing = 0;
 		}
 	}
 }
@@ -108,14 +122,20 @@ void PrintCards(struct Card *cards) {
 	for (int i = 0; i < 108; i++) {
 		struct Card *card = &cards[i];
 		printf("Card #%i: ", i+1);
-		if (card->color != 0) {
-			printf("%s ", ColorLabel(*card->color));
-		}
-		if (card->type != number) {
-			printf("%s ", CardTypeLabel(card->type));
-		}
-		if(card->number != 0) {
-			printf("%i", *card->number);
+		if (card->type == numbered) {
+			printf("%s ", ColorLabel(card->content.numbered.color));
+			printf("%i", card->content.numbered.number);
+		} else if (card->type == skip) {
+			printf("%s ", ColorLabel(card->content.skip.color));
+			printf("%s", CardTypeLabel(card->type));
+		} else if (card->type == reverse) {
+			printf("%s ", ColorLabel(card->content.reverse.color));
+			printf("%s", CardTypeLabel(card->type));
+		} else if (card->type == draw2) {
+			printf("%s ", ColorLabel(card->content.draw2.color));
+			printf("%s", CardTypeLabel(card->type));
+		} else {
+			printf("%s", CardTypeLabel(card->type));
 		}
 		printf("\n");
 	}
