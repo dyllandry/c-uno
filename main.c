@@ -40,7 +40,7 @@ int main() {
  */
 struct Card **CreateCards() {
 	// An UNO deck has 108 cards in total.
-	struct Card **cards = malloc((sizeof(struct Card *)) * 108);
+	struct Card **cards = malloc((sizeof(*cards)) * 108);
 	for (int i = 0; i < 108; i++) {
 		cards[i] = malloc(sizeof(struct Card));
 		cards[i]->number = noNumber;
