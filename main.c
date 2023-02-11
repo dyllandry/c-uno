@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
+#include <stdbool.h>
 
 enum Color { blue, red, green, yellow, anyColor, noColor, };
 enum Number { zero, one, two, three, four, five, six, seven, eight, nine, noNumber, };
@@ -16,14 +18,18 @@ struct Card {
 
 void FillCards(struct Card *cards);
 void PrintCards(struct Card *cards);
+void ShuffleCards(struct Card *cards, int shuffles);
 
 char *ColorLabel(enum Color color);
 char *TurnEffectLabel(enum TurnEffect turn_effect);
 char *DrawEffectLabel(enum DrawEffect draw_effect);
 
+int RandomInt(int min, int max);
+
 int main() {
 	struct Card cards[108];
 	FillCards(cards);
+	ShuffleCards(cards, 108);
 	PrintCards(cards);
 	return 0;
 }
@@ -87,6 +93,29 @@ void PrintCards(struct Card *cards) {
 		}
 		printf("\n");
 	}
+}
+
+void ShuffleCards(struct Card *cards, int shuffles) {
+	for (int shuffle = 0; shuffle < shuffles; shuffle++) {
+		int card_a_position = RandomInt(0, 107);
+		int card_b_position = RandomInt(0,107);
+		struct Card card_a = cards[card_a_position];
+		struct Card card_b = cards[card_b_position];
+		cards[card_a_position] = card_b;
+		cards[card_b_position] = card_a;
+	}
+};
+
+int RandomInt(int min, int max) {
+	static bool seeded = false;
+	if (!seeded) {
+		srand(time(NULL));
+		seeded = true;
+	}
+	double random_number_0to1 = (double)rand() / RAND_MAX;
+	int range = max - min;
+	int random_number = min + (int)round(random_number_0to1 * range);
+	return random_number;
 }
 
 char *ColorLabel(enum Color color) {
