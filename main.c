@@ -1,12 +1,93 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
-enum Color {
-	blue,
-	red,
-	green,
-	yellow,
+enum Color { blue, red, green, yellow, anyColor, noColor, };
+enum Number { zero, one, two, three, four, five, six, seven, eight, nine, noNumber, };
+enum TurnEffect { skip, reverse, noTurnEffect, };
+enum DrawEffect { draw2, draw4, noDrawEffect, };
+
+struct Card {
+	enum Number number;
+	enum Color color;
+	enum TurnEffect turn_effect;
+	enum DrawEffect draw_effect;
 };
+
+void FillCards(struct Card *cards);
+void PrintCards(struct Card *cards);
+
+char *ColorLabel(enum Color color);
+char *TurnEffectLabel(enum TurnEffect turn_effect);
+char *DrawEffectLabel(enum DrawEffect draw_effect);
+
+int main() {
+	struct Card cards[108];
+	FillCards(cards);
+	PrintCards(cards);
+	return 0;
+}
+
+/**
+ * Cards should be an array of 108 cards.
+ */
+void FillCards(struct Card *cards) {
+	// An UNO deck has 108 cards in total.
+	for (int i = 0; i < 108; i++) {
+		// Zero struct
+		cards[i].number = noNumber;
+		cards[i].color = noColor;
+		cards[i].turn_effect = noTurnEffect;
+		cards[i].draw_effect = noDrawEffect;
+
+		if (i < 76) {
+			// Cards 1-76: 76 colored & numbered cards There are 19 of each color.
+			// These are numbered 0-9, with each color having one 0 and two of 1-9.
+			cards[i].number = ceilf((i % 19) / 2.0);
+			cards[i].color = i / 19;
+		} else if (i < 84) {
+			// Cards 77-84: 8 colored skip cards
+			cards[i].turn_effect = skip;
+			cards[i].color = (i - 76) / 2;
+		} else if (i < 92) {
+			// Cards 85-92: 8 colored reverse cards
+			cards[i].turn_effect = reverse;
+			cards[i].color = (i - 84) / 2;
+		} else if (i < 100) {
+			// Cards 93-100: 8 colored draw 2 cards
+			cards[i].draw_effect = draw2;
+			cards[i].color = (i - 92) / 2;
+		} else if (i < 104) {
+			// Cards 101-104: 4 wild cards
+			cards[i].color = anyColor;
+		} else if (i < 108) {
+			// Cards 105-108: 4 wild draw 4 cards
+			cards[i].color = anyColor;
+			cards[i].draw_effect = draw4;
+		}
+	}
+}
+
+void PrintCards(struct Card *cards) {
+	printf("Here's what we have in our cards...\n");
+	for (int i = 0; i < 108; i++) {
+		struct Card *card = &cards[i];
+		printf("Card #%i: ", i+1);
+		if (card->color != noColor) {
+			printf("%s ", ColorLabel(card->color));
+		}
+		if (card->number != noNumber) {
+			printf("%i ", card->number);
+		}
+		if (card->turn_effect != noTurnEffect) {
+			printf("%s ", TurnEffectLabel(card->turn_effect));
+		}
+		if (card->draw_effect != noDrawEffect) {
+			printf("%s ", DrawEffectLabel(card->draw_effect));
+		}
+		printf("\n");
+	}
+}
 
 char *ColorLabel(enum Color color) {
 	if (color == blue) {
@@ -17,133 +98,29 @@ char *ColorLabel(enum Color color) {
 		return "green";
 	} else if (color == yellow) {
 		return "yellow";
-	} else {
-		return "";
-	}
-}
-
-enum CardType {
-	numbered,
-	skip,
-	reverse,
-	draw2,
-	wild,
-	wildDraw4,
-};
-
-char *CardTypeLabel(enum CardType type) {
-	if (type == numbered) {
-		return "number";
-	} else if (type == skip) {
-		return "skip";
-	} else if (type == reverse) {
-		return "reverse";
-	} else if (type == draw2) {
-		return "draw 2";
-	} else if (type == wild) {
+	} else if (color == anyColor) {
 		return "wild";
-	} else if (type == wildDraw4) {
-		return "wild draw 4";
 	} else {
 		return "";
 	}
 }
 
-struct NumberedCardContent {
-	int number;
-	enum Color color;
-};
-
-struct SkipCardContent {
-	enum Color color;
-};
-
-struct ReverseCardContent {
-	enum Color color;
-};
-
-struct Draw2CardContent {
-	enum Color color;
-};
-
-struct NoCardContent {
-	int nothing;
-};
-
-struct Card {
-	enum CardType type;
-	union {
-		struct NumberedCardContent numbered;
-		struct SkipCardContent skip;
-		struct ReverseCardContent reverse;
-		struct Draw2CardContent draw2;
-		struct NoCardContent none;
-	} content;
-};
-
-/**
- * Cards should be an array of 108 cards.
- */
-void FillCards(struct Card *cards) {
-	for (int i = 0; i < 108; i++) {
-		// An UNO deck has 108 cards in total.
-		if (i < 76) {
-			// Cards 1-76: 76 colored & numbered cards There are 19 of each color.
-			// These are numbered 0-9, with each color having one 0 and two of 1-9.
-			cards[i].type = numbered;
-			cards[i].content.numbered.number = ((i % 19) + 1 ) / 2;
-			cards[i].content.numbered.color = i / 19;
-		} else if (i < 84) {
-			// Cards 77-84: 8 colored skip cards
-			cards[i].type = skip;
-			cards[i].content.skip.color = (i - 76) / 2;
-		} else if (i < 92) {
-			// Cards 85-92: 8 colored reverse cards
-			cards[i].type = reverse;
-			cards[i].content.reverse.color = (i - 84) / 2;
-		} else if (i < 100) {
-			// Cards 93-100: 8 colored draw 2 cards
-			cards[i].type = draw2;
-			cards[i].content.draw2.color = (i - 92) / 2;
-		} else if (i < 104) {
-			// Cards 101-104: 4 wild cards
-			cards[i].type = wild;
-			cards[i].content.none.nothing = 0;
-		} else if (i < 108) {
-			// Cards 105-108: 4 wild draw 4 cards
-			cards[i].type = wildDraw4;
-			cards[i].content.none.nothing = 0;
-		}
+char *TurnEffectLabel(enum TurnEffect turn_effect) {
+	if (turn_effect == skip) {
+		return "skip";
+	} else if (turn_effect == reverse) {
+		return "reverse";
+	} else {
+		return "";
 	}
 }
 
-void PrintCards(struct Card *cards) {
-	printf("Here's what we have in our cards...\n");
-	for (int i = 0; i < 108; i++) {
-		struct Card *card = &cards[i];
-		printf("Card #%i: ", i+1);
-		if (card->type == numbered) {
-			printf("%s ", ColorLabel(card->content.numbered.color));
-			printf("%i", card->content.numbered.number);
-		} else if (card->type == skip) {
-			printf("%s ", ColorLabel(card->content.skip.color));
-			printf("%s", CardTypeLabel(card->type));
-		} else if (card->type == reverse) {
-			printf("%s ", ColorLabel(card->content.reverse.color));
-			printf("%s", CardTypeLabel(card->type));
-		} else if (card->type == draw2) {
-			printf("%s ", ColorLabel(card->content.draw2.color));
-			printf("%s", CardTypeLabel(card->type));
-		} else {
-			printf("%s", CardTypeLabel(card->type));
-		}
-		printf("\n");
+char *DrawEffectLabel(enum DrawEffect draw_effect) {
+	if (draw_effect == draw2) {
+		return "draw 2";
+	} else if (draw_effect == draw4) {
+		return "draw 4";
+	} else {
+		return "";
 	}
-}
-
-int main() {
-	struct Card cards[108];
-	FillCards(cards);
-	PrintCards(cards);
-	return 0;
 }

@@ -8,36 +8,3 @@ I'll instantiate all 108 cards on the stack. The deck, pile, and each player's h
 
 ## Todo
 
-- I found a different way of storing cards, by their effects.
-	- The benefits are: Card structs are same size and can be stored in a single array.
-	- No necessary unions.
-	- No null pointers to imply "none".
-
-```c
-enum Color {
-	blue,
-	red,
-	green,
-	yellow,
-	any
-};
-
-enum Number {
-	none,
-	one,
-	...,
-};
-
-enum TurnEffect {
-	skip,
-	reverse
-};
-
-struct Card {
-	enum Number number;
-	enum Color color;
-	enum TurnEffect turn_effect;
-	enum DrawEffect draw_effect;
-}
-```
-
