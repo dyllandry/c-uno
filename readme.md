@@ -4,10 +4,14 @@ Uno made with C!
 
 ## Todo
 
+- model the deck
+	- Has an array of dynamically allocated cards with a static length of 108. Since deck starts with 108 cards and will never have any more. Don't care about shrinking as cards are drawn.
+- model player's hands
+	- Has a dynamically allocated array of dynamically allocated cards so the array can grow in size. Players might have only 5 cards in their hand, and possibly never more than 15.
+- model the discard pile
+	- Has an array of dynamically allocated cards with a static length of 108. Discard pile will start with 0 cards, but is very likely to eventually contain most of the 108 cards.
 - model a series of turns
 - model a turn for players and npc
-- model the discard pile
-- model player's hands
 
 ## Todo History
 
