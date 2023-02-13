@@ -20,7 +20,7 @@ struct Deck {
 	struct Card *cards[108];
 };
 
-void FillDeck(struct Deck *deck);
+struct Deck CreateDeck();
 void PrintDeck(struct Deck *deck);
 void ShuffleDeck(struct Deck *deck, int shuffles);
 
@@ -31,8 +31,7 @@ char *DrawEffectLabel(enum DrawEffect draw_effect);
 int RandomInt(int min, int max);
 
 int main() {
-	struct Deck deck;
-	FillDeck(&deck);
+	struct Deck deck = CreateDeck();
 	ShuffleDeck(&deck, 500);
 	PrintDeck(&deck);
 	return 0;
@@ -41,42 +40,44 @@ int main() {
 /**
  * Creates 108 cards and fills an array with them.
  */
-void FillDeck(struct Deck *deck) {
+struct Deck CreateDeck() {
+	struct Deck deck;
 	// An UNO deck has 108 cards in total.
 	for (int i = 0; i < 108; i++) {
-		struct Card *new_card = malloc(sizeof(struct Card));
-		new_card->number = noNumber;
-		new_card->color = noColor;
-		new_card->turn_effect = noTurnEffect;
-		new_card->draw_effect = noDrawEffect;
+		struct Card *card = malloc(sizeof(struct Card));
+		card->number = noNumber;
+		card->color = noColor;
+		card->turn_effect = noTurnEffect;
+		card->draw_effect = noDrawEffect;
 
 		if (i < 76) {
 			// Cards 1-76: 76 colored & numbered cards There are 19 of each color->
 			// These are numbered 0-9, with each color having one 0 and two of 1-9->
-			new_card->number = ceilf((i % 19) / 2.0);
-			new_card->color = i / 19;
+			card->number = ceilf((i % 19) / 2.0);
+			card->color = i / 19;
 		} else if (i < 84) {
 			// Cards 77-84: 8 colored skip cards
-			new_card->turn_effect = skip;
-			new_card->color = (i - 76) / 2;
+			card->turn_effect = skip;
+			card->color = (i - 76) / 2;
 		} else if (i < 92) {
 			// Cards 85-92: 8 colored reverse cards
-			new_card->turn_effect = reverse;
-			new_card->color = (i - 84) / 2;
+			card->turn_effect = reverse;
+			card->color = (i - 84) / 2;
 		} else if (i < 100) {
 			// Cards 93-100: 8 colored draw 2 cards
-			new_card->draw_effect = draw2;
-			new_card->color = (i - 92) / 2;
+			card->draw_effect = draw2;
+			card->color = (i - 92) / 2;
 		} else if (i < 104) {
 			// Cards 101-104: 4 wild cards
-			new_card->color = anyColor;
+			card->color = anyColor;
 		} else if (i < 108) {
 			// Cards 105-108: 4 wild draw 4 cards
-			new_card->color = anyColor;
-			new_card->draw_effect = draw4;
+			card->color = anyColor;
+			card->draw_effect = draw4;
 		}
-		deck->cards[i] = new_card;
+		deck.cards[i] = card;
 	}
+	return deck;
 }
 
 void PrintDeck(struct Deck *deck) {
