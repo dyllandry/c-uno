@@ -4,6 +4,8 @@ Uno made with C!
 
 ## Todo
 
+- turn FillDeck to CreateDeck
+	- I think it can return by copy the deck struct it makes and the pointers will be fine
 - model player's hands
 	- Has a dynamically allocated array of dynamically allocated cards so the array can grow in size. Players might have only 5 cards in their hand, and possibly never more than 15.
 - model the discard pile
