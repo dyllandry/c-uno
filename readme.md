@@ -15,6 +15,7 @@ Uno made with C!
 
 ## Todo History
 
+- *2023-02-13*: add CreateCardLabel(), first time returning allocated char string
 - *2023-02-12*: model the deck
 - *2023-02-11*: shuffling
 - *2023-02-10*: model card data by card effects

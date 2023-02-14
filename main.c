@@ -21,6 +21,7 @@ struct Deck {
 };
 
 struct Deck CreateDeck();
+char *CreateCardLabel(struct Card card);
 void PrintDeck(struct Deck *deck);
 void ShuffleDeck(struct Deck *deck, int shuffles);
 
@@ -80,24 +81,27 @@ struct Deck CreateDeck() {
 	return deck;
 }
 
+char *CreateCardLabel(struct Card card) {
+	char *color_label = ColorLabel(card.color);
+	char *turn_effect_label = TurnEffectLabel(card.turn_effect);
+	char *draw_effect_label = DrawEffectLabel(card.draw_effect);
+	char *format = "%s %i %s %s";
+	// snprintf returns number of bytes to be written
+	// passing NULL for char buffer and 0 for bufsz will make it skip writing any data
+	size_t card_label_length = snprintf(NULL, 0, format, color_label, card.number, turn_effect_label, draw_effect_label);
+	char *card_label = malloc(1 + card_label_length);
+	// here we actually write the char string to the buffer along with the needed bufsz
+	snprintf(card_label, 1 + card_label_length, format, color_label, card.number, turn_effect_label, draw_effect_label);
+	return card_label;
+}
+
 void PrintDeck(struct Deck *deck) {
 	printf("Here's what we have in our cards...\n");
 	for (int i = 0; i < 108; i++) {
-		struct Card *card = deck->cards[i];
-		printf("Card #%i: ", i+1);
-		if (card->color != noColor) {
-			printf("%s ", ColorLabel(card->color));
-		}
-		if (card->number != noNumber) {
-			printf("%i ", card->number);
-		}
-		if (card->turn_effect != noTurnEffect) {
-			printf("%s ", TurnEffectLabel(card->turn_effect));
-		}
-		if (card->draw_effect != noDrawEffect) {
-			printf("%s ", DrawEffectLabel(card->draw_effect));
-		}
-		printf("\n");
+		struct Card card = *deck->cards[i];
+		char *card_label = CreateCardLabel(card);
+		printf("Card #%i: %s\n", i+1, card_label);
+		free(card_label);
 	}
 }
 
