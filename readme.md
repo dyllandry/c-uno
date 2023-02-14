@@ -4,6 +4,8 @@ Uno made with C!
 
 ## Todo
 
+- add an array abstraction for dynamically sized arrays
+	- an example: https://stackoverflow.com/questions/3536153/c-dynamically-growing-array
 - model player's hands
 	- Has a dynamically allocated array of dynamically allocated cards so the array can grow in size. Players might have only 5 cards in their hand, and possibly never more than 15.
 - model the discard pile
