@@ -9,12 +9,18 @@ enum Number { zero, one, two, three, four, five, six, seven, eight, nine, noNumb
 enum TurnEffect { skip, reverse, noTurnEffect, };
 enum DrawEffect { draw2, draw4, noDrawEffect, };
 
+char *ColorLabel(enum Color color);
+char *TurnEffectLabel(enum TurnEffect turn_effect);
+char *DrawEffectLabel(enum DrawEffect draw_effect);
+
 struct Card {
 	enum Number number;
 	enum Color color;
 	enum TurnEffect turn_effect;
 	enum DrawEffect draw_effect;
 };
+
+char *CreateCardLabel(struct Card card);
 
 struct CardArray {
 	struct Card *cards;
@@ -27,18 +33,10 @@ void FreeCardArray(struct CardArray *array);
 void InsertCardArray(struct CardArray *array, struct Card card);
 void PrintCardArray(struct CardArray *array);
 
-struct Deck {
-	struct Card *cards[108];
-};
-
+struct Deck { struct Card *cards[108]; };
 struct Deck CreateDeck();
-char *CreateCardLabel(struct Card card);
 void PrintDeck(struct Deck *deck);
 void ShuffleDeck(struct Deck *deck, int shuffles);
-
-char *ColorLabel(enum Color color);
-char *TurnEffectLabel(enum TurnEffect turn_effect);
-char *DrawEffectLabel(enum DrawEffect draw_effect);
 
 int RandomInt(int min, int max);
 
