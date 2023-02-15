@@ -16,6 +16,17 @@ struct Card {
 	enum DrawEffect draw_effect;
 };
 
+struct CardArray {
+	struct Card *cards;
+	size_t size;
+	size_t used;
+};
+
+void InitCardArray(struct CardArray *array, size_t size);
+void FreeCardArray(struct CardArray *array);
+void InsertCardArray(struct CardArray *array, struct Card card);
+void PrintCardArray(struct CardArray *array);
+
 struct Deck {
 	struct Card *cards[108];
 };
@@ -35,6 +46,12 @@ int main() {
 	struct Deck deck = CreateDeck();
 	ShuffleDeck(&deck, 500);
 	PrintDeck(&deck);
+	struct CardArray array;
+	InitCardArray(&array, 5);
+	for (int i = 0; i < 10; i++) {
+		InsertCardArray(&array, *deck.cards[i]);
+	}
+	PrintCardArray(&array);
 	return 0;
 }
 
@@ -81,6 +98,30 @@ struct Deck CreateDeck() {
 	return deck;
 }
 
+void InitCardArray(struct CardArray *array, size_t size) {
+	array->size = size;
+	array->used = 0;
+	array->cards = malloc(size * sizeof(*array));
+}
+
+void FreeCardArray(struct CardArray *array) {
+	free(array->cards);
+	array->cards = 0;
+	array->size = 0;
+	array->used = 0;
+}
+
+void InsertCardArray(struct CardArray *array, struct Card card) {
+	bool array_full = array->size == array->used;
+	if (array_full) {
+		size_t new_size = 2 * array->size;
+		array->cards = realloc(array->cards, new_size * sizeof(struct Card));
+		array->size = new_size;
+	}
+	array->cards[array->used] = card;
+	array->used += 1;
+}
+
 char *CreateCardLabel(struct Card card) {
 	char *color_label = ColorLabel(card.color);
 	char *turn_effect_label = TurnEffectLabel(card.turn_effect);
@@ -93,6 +134,15 @@ char *CreateCardLabel(struct Card card) {
 	// here we actually write the char string to the buffer along with the needed bufsz
 	snprintf(card_label, 1 + card_label_length, format, color_label, card.number, turn_effect_label, draw_effect_label);
 	return card_label;
+}
+
+void PrintCardArray(struct CardArray *array) {
+	printf("Cards in array...\n");
+	for (int i = 0; i < array->used; i++) {
+		char *card_label = CreateCardLabel(array->cards[i]);
+		printf("Card #%i: %s\n", i, card_label);
+		free(card_label);
+	}
 }
 
 void PrintDeck(struct Deck *deck) {
