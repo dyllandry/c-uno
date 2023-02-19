@@ -28,6 +28,10 @@ struct CardArray {
 	size_t used;
 };
 
+struct Player {
+	struct CardArray hand;
+};
+
 void InitCardArray(struct CardArray *array, size_t size);
 void FreeCardArray(struct CardArray *array);
 void InsertCardArray(struct CardArray *array, struct Card card);
@@ -37,19 +41,14 @@ struct Deck { struct Card *cards[108]; };
 struct Deck CreateDeck();
 void PrintDeck(struct Deck *deck);
 void ShuffleDeck(struct Deck *deck, int shuffles);
+// TODO void DrawCard(struct Deck *deck, struct CardArray *player_hand);
 
 int RandomInt(int min, int max);
 
 int main() {
-	struct Deck deck = CreateDeck();
-	ShuffleDeck(&deck, 500);
-	PrintDeck(&deck);
-	struct CardArray array;
-	InitCardArray(&array, 5);
-	for (int i = 0; i < 10; i++) {
-		InsertCardArray(&array, *deck.cards[i]);
-	}
-	PrintCardArray(&array);
+	struct Player player1;
+	InitCardArray(&player1.hand, 5);
+	PrintCardArray(&player1.hand);
 	return 0;
 }
 
