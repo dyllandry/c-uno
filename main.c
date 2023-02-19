@@ -99,6 +99,10 @@ void InitCardArray(struct CardArray *array, size_t size) {
 	array->size = size;
 	array->used = 0;
 	array->cards = malloc(size * sizeof(*array));
+	for (size_t i = 0; i < size; i++) {
+		struct Card new_card = {0};
+		array->cards[i] = new_card;
+	}
 }
 
 void FreeCardArray(struct CardArray *array) {
