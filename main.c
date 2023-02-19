@@ -21,6 +21,7 @@ struct Card {
 };
 
 char *CreateCardLabel(struct Card card);
+void PrintCard(struct Card card);
 
 struct CardArray {
 	struct Card *cards;
@@ -135,6 +136,12 @@ char *CreateCardLabel(struct Card card) {
 	// here we actually write the char string to the buffer along with the needed bufsz
 	snprintf(card_label, 1 + card_label_length, format, color_label, card.number, turn_effect_label, draw_effect_label);
 	return card_label;
+}
+
+void PrintCard(struct Card card) {
+	char *label = CreateCardLabel(card);
+	printf("Card: %s\n", label);
+	free(label);
 }
 
 void PrintCardArray(struct CardArray *array) {
