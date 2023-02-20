@@ -10,6 +10,7 @@ enum TurnEffect { skip, reverse, noTurnEffect, };
 enum DrawEffect { draw2, draw4, noDrawEffect, };
 
 char *ColorLabel(enum Color color);
+char *NumberLabel(enum Number number);
 char *TurnEffectLabel(enum TurnEffect turn_effect);
 char *DrawEffectLabel(enum DrawEffect draw_effect);
 
@@ -126,15 +127,16 @@ void InsertCardArray(struct CardArray *array, struct Card card) {
 
 char *CreateCardLabel(struct Card card) {
 	char *color_label = ColorLabel(card.color);
+	char *number_label = NumberLabel(card.number);
 	char *turn_effect_label = TurnEffectLabel(card.turn_effect);
 	char *draw_effect_label = DrawEffectLabel(card.draw_effect);
-	char *format = "%s %i %s %s";
+	char *format = "%s %s %s %s";
 	// snprintf returns number of bytes to be written
 	// passing NULL for char buffer and 0 for bufsz will make it skip writing any data
-	size_t card_label_length = snprintf(NULL, 0, format, color_label, card.number, turn_effect_label, draw_effect_label);
+	size_t card_label_length = snprintf(NULL, 0, format, color_label, number_label, turn_effect_label, draw_effect_label);
 	char *card_label = malloc(1 + card_label_length);
 	// here we actually write the char string to the buffer along with the needed bufsz
-	snprintf(card_label, 1 + card_label_length, format, color_label, card.number, turn_effect_label, draw_effect_label);
+	snprintf(card_label, 1 + card_label_length, format, color_label, number_label, turn_effect_label, draw_effect_label);
 	return card_label;
 }
 
@@ -199,6 +201,17 @@ char *ColorLabel(enum Color color) {
 		return "wild";
 	} else {
 		return "";
+	}
+}
+
+char *NumberLabel(enum Number number) {
+	if (number == noNumber) {
+		return "";
+	} else {
+		size_t label_length = snprintf(NULL, 0, "%i", number);
+		char *number_label = malloc(1 + label_length);
+		snprintf(number_label, 1 + label_length, "%i", number);
+		return number_label;
 	}
 }
 
