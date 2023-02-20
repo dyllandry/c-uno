@@ -21,6 +21,49 @@ struct Card {
 	enum DrawEffect draw_effect;
 };
 
+struct UnoCardsData {
+	struct Card cards[108];
+};
+
+struct UnoCardsData CreateUnoCardsData() {
+	struct UnoCardsData uno_cards_data;
+	for (int i = 0; i < 108; i++) {
+		struct Card new_card;
+		new_card.number = noNumber;
+		new_card.color = noColor;
+		new_card.turn_effect = noTurnEffect;
+		new_card.draw_effect = noDrawEffect;
+
+		if (i < 76) {
+			// Cards 1-76: 76 colored & numbered cards There are 19 of each color.
+			// These are numbered 0-9, with each color having one 0 and two of 1-9.
+			new_card.number = ceilf((i % 19) / 2.0);
+			new_card.color = i / 19;
+		} else if (i < 84) {
+			// Cards 77-84: 8 colored skip cards
+			new_card.turn_effect = skip;
+			new_card.color = (i - 76) / 2;
+		} else if (i < 92) {
+			// Cards 85-92: 8 colored reverse cards
+			new_card.turn_effect = reverse;
+			new_card.color = (i - 84) / 2;
+		} else if (i < 100) {
+			// Cards 93-100: 8 colored draw 2 cards
+			new_card.draw_effect = draw2;
+			new_card.color = (i - 92) / 2;
+		} else if (i < 104) {
+			// Cards 101-104: 4 wild cards
+			new_card.color = anyColor;
+		} else if (i < 108) {
+			// Cards 105-108: 4 wild draw 4 cards
+			new_card.color = anyColor;
+			new_card.draw_effect = draw4;
+		}
+		uno_cards_data.cards[i] = new_card;
+	}
+	return uno_cards_data;
+}
+
 char *CreateCardLabel(struct Card card);
 void PrintCard(struct Card card);
 
@@ -30,14 +73,26 @@ struct CardArray {
 	size_t used;
 };
 
-struct Player {
-	struct CardArray hand;
-};
-
 void InitCardArray(struct CardArray *array, size_t size);
 void FreeCardArray(struct CardArray *array);
 void InsertCardArray(struct CardArray *array, struct Card card);
 void PrintCardArray(struct CardArray *array);
+
+struct Player {
+	struct CardArray hand;
+};
+
+struct CardStack {
+	struct Card **cards;
+	size_t size;
+	size_t used;
+};
+
+struct CardStack CreateCardStack();
+void PushCardStack(struct CardStack *stack, struct Card *card);
+struct Card *PopCardStack(struct CardStack *stack);
+bool IsEmptyCardStack(struct CardStack *stack);
+void PrintCardStack(struct CardStack *stack);
 
 struct Deck { struct Card *cards[108]; };
 struct Deck CreateDeck();
@@ -48,9 +103,25 @@ void ShuffleDeck(struct Deck *deck, int shuffles);
 int RandomInt(int min, int max);
 
 int main() {
-	struct Player player1;
-	InitCardArray(&player1.hand, 5);
-	PrintCardArray(&player1.hand);
+	struct UnoCardsData uno_cards_data = CreateUnoCardsData();
+	struct CardStack deck = CreateCardStack();
+	for (int i = 0; i < sizeof uno_cards_data.cards / sizeof uno_cards_data.cards[0]; i++) {
+		PushCardStack(&deck, &uno_cards_data.cards[i]);
+	}
+
+	printf("Deck before:\n");
+	PrintCardStack(&deck);
+	printf("\n");
+
+	struct Card *card = PopCardStack(&deck);
+
+	printf("Deck after:\n");
+	PrintCardStack(&deck);
+	printf("\n");
+
+	char *card_label = CreateCardLabel(*card);
+	printf("The card I drew: %s\n", card_label);
+
 	return 0;
 }
 
@@ -123,6 +194,46 @@ void InsertCardArray(struct CardArray *array, struct Card card) {
 	}
 	array->cards[array->used] = card;
 	array->used += 1;
+}
+
+struct CardStack CreateCardStack() {
+	struct CardStack stack;
+	stack.size = 1;
+	stack.used = 0;
+	stack.cards = malloc(stack.size * sizeof(*stack.cards));
+	stack.cards[0] = 0;
+	return stack;
+}
+
+void PushCardStack(struct CardStack *stack, struct Card *card) {
+	if (stack->used + 1 == stack->size) {
+		stack->size *= 2;
+		stack->cards = realloc(stack->cards, stack->size * sizeof(*stack->cards));
+	}
+	stack->cards[stack->used] = card;
+	stack->used++;
+}
+
+struct Card *PopCardStack(struct CardStack *stack) {
+	if (stack->used == 0) {
+		return 0;
+	}
+	struct Card *card = &*stack->cards[stack->used - 1];
+	stack->cards[stack->used - 1] = 0;
+	stack->used--;
+	return card;
+}
+
+bool IsEmptyCardStack(struct CardStack *stack) {
+	return stack->used == 0;
+}
+
+void PrintCardStack(struct CardStack *stack) {
+	printf("Cards starting at the top...\n");
+	for (int i = stack->used - 1; i >= 0; i--) {
+		char *card_label = CreateCardLabel(*stack->cards[i]);
+		printf("Card #%lu: %s\n", stack->used - i, card_label);
+	}
 }
 
 char *CreateCardLabel(struct Card card) {

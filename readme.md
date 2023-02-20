@@ -4,16 +4,14 @@ Uno made with C!
 
 ## Todo
 
-- model stack for deck so it has easy api to use in methods like DrawCard(). Could also be used with discard pile.
+- change CardArray to not be a dynamic array of cards, but instead a dynamic array of pointers to cards.
 - model player's hands
-	- Has a dynamically allocated array of dynamically allocated cards so the array can grow in size. Players might have only 5 cards in their hand, and possibly never more than 15.
 - model the discard pile
-	- Has an array of dynamically allocated cards with a static length of 108. Discard pile will start with 0 cards, but is very likely to eventually contain most of the 108 cards.
-- model a series of turns
-- model a turn for players and npc
+- model a series of turns including turns for players and npc
 
 ## Todo History
 
+- *2023-02-20*: add UnoCardsData and CardStack to implement the deck and discard pile
 - *2023-02-14*: add CardArray, first dynamically sized array implementation!
 - *2023-02-13*: add CreateCardLabel(), first time returning allocated char string
 - *2023-02-12*: model the deck
