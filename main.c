@@ -68,14 +68,13 @@ char *CreateCardLabel(struct Card card);
 void PrintCard(struct Card card);
 
 struct CardArray {
-	struct Card *cards;
+	struct Card **cards;
 	size_t size;
 	size_t used;
 };
 
-void InitCardArray(struct CardArray *array, size_t size);
-void FreeCardArray(struct CardArray *array);
-void InsertCardArray(struct CardArray *array, struct Card card);
+struct CardArray CreateCardArray();
+void PushCardArray(struct CardArray *array, struct Card *card);
 void PrintCardArray(struct CardArray *array);
 
 struct Player {
@@ -98,7 +97,6 @@ struct Deck { struct Card *cards[108]; };
 struct Deck CreateDeck();
 void PrintDeck(struct Deck *deck);
 void ShuffleDeck(struct Deck *deck, int shuffles);
-// TODO void DrawCard(struct Deck *deck, struct CardArray *player_hand);
 
 int RandomInt(int min, int max);
 
@@ -109,18 +107,16 @@ int main() {
 		PushCardStack(&deck, &uno_cards_data.cards[i]);
 	}
 
-	printf("Deck before:\n");
-	PrintCardStack(&deck);
-	printf("\n");
+	struct Player player;
+	player.hand = CreateCardArray();
 
-	struct Card *card = PopCardStack(&deck);
+	int hand_size = 7;
+	for (int i = 0; i < hand_size; i++) {
+		struct Card *drawn_card = PopCardStack(&deck);
+		PushCardArray(&player.hand, drawn_card);
+	}
 
-	printf("Deck after:\n");
-	PrintCardStack(&deck);
-	printf("\n");
-
-	char *card_label = CreateCardLabel(*card);
-	printf("The card I drew: %s\n", card_label);
+	PrintCardArray(&player.hand);
 
 	return 0;
 }
@@ -168,32 +164,31 @@ struct Deck CreateDeck() {
 	return deck;
 }
 
-void InitCardArray(struct CardArray *array, size_t size) {
-	array->size = size;
-	array->used = 0;
-	array->cards = malloc(size * sizeof(*array));
-	for (size_t i = 0; i < size; i++) {
-		struct Card new_card = {0};
-		array->cards[i] = new_card;
-	}
+struct CardArray CreateCardArray() {
+	struct CardArray array;
+	array.size = 1;
+	array.used = 0;
+	array.cards = malloc(array.size * sizeof(*array.cards));
+	array.cards[0] = 0;
+	return array;
 }
 
-void FreeCardArray(struct CardArray *array) {
-	free(array->cards);
-	array->cards = 0;
-	array->size = 0;
-	array->used = 0;
-}
-
-void InsertCardArray(struct CardArray *array, struct Card card) {
-	bool array_full = array->size == array->used;
-	if (array_full) {
-		size_t new_size = 2 * array->size;
-		array->cards = realloc(array->cards, new_size * sizeof(struct Card));
-		array->size = new_size;
+void PushCardArray(struct CardArray *array, struct Card *card) {
+	if (array->used == array->size) {
+		array->size *= 2;
+		array->cards = realloc(array->cards, array->size * sizeof(*array->cards));
 	}
 	array->cards[array->used] = card;
-	array->used += 1;
+	array->used++;
+}
+
+void PrintCardArray(struct CardArray *array) {
+	printf("Cards in array...\n");
+	for (int i = 0; i < array->used; i++) {
+		char *card_label = CreateCardLabel(*array->cards[i]);
+		printf("Card #%i: %s\n", i+1, card_label);
+		free(card_label);
+	}
 }
 
 struct CardStack CreateCardStack() {
@@ -206,7 +201,7 @@ struct CardStack CreateCardStack() {
 }
 
 void PushCardStack(struct CardStack *stack, struct Card *card) {
-	if (stack->used + 1 == stack->size) {
+	if (stack->used == stack->size) {
 		stack->size *= 2;
 		stack->cards = realloc(stack->cards, stack->size * sizeof(*stack->cards));
 	}
@@ -255,15 +250,6 @@ void PrintCard(struct Card card) {
 	char *label = CreateCardLabel(card);
 	printf("Card: %s\n", label);
 	free(label);
-}
-
-void PrintCardArray(struct CardArray *array) {
-	printf("Cards in array...\n");
-	for (int i = 0; i < array->used; i++) {
-		char *card_label = CreateCardLabel(array->cards[i]);
-		printf("Card #%i: %s\n", i, card_label);
-		free(card_label);
-	}
 }
 
 void PrintDeck(struct Deck *deck) {
