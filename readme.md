@@ -6,7 +6,7 @@ Uno made with C!
 
 - model player's hands
 - model the discard pile
-- model a series of turns including turns for players and npc
+- model a series of turns including turns for players (skip npcs for now)
 
 ## Todo History
 
