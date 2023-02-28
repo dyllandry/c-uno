@@ -57,11 +57,7 @@ void PushCardStack(struct CardStack *stack, struct Card *card);
 struct Card *PopCardStack(struct CardStack *stack);
 bool IsEmptyCardStack(struct CardStack *stack);
 void PrintCardStack(struct CardStack *stack);
-
-struct Deck { struct Card *cards[108]; };
-struct Deck CreateDeck();
-void PrintDeck(struct Deck *deck);
-void ShuffleDeck(struct Deck *deck, int shuffles);
+void ShuffleCardStack(struct CardStack *stack);
 
 int RandomInt(int min, int max);
 
@@ -72,16 +68,11 @@ int main() {
 		PushCardStack(&deck, &uno_cards_data.cards[i]);
 	}
 
-	struct Player player = CreatePlayer();
-
-	int hand_size = 7;
-	for (int i = 0; i < hand_size; i++) {
-		struct Card *drawn_card = PopCardStack(&deck);
-		PushCardArray(&player.hand, drawn_card);
-	}
-
-	PrintCardArray(&player.hand);
-
+	printf("Before:\n");
+	PrintCardStack(&deck);
+	printf("After:\n");
+	ShuffleCardStack(&deck);
+	PrintCardStack(&deck);
 	return 0;
 }
 
@@ -122,49 +113,6 @@ struct UnoCardsData CreateUnoCardsData() {
 		uno_cards_data.cards[i] = new_card;
 	}
 	return uno_cards_data;
-}
-
-/**
- * Creates 108 cards and fills an array with them.
- */
-struct Deck CreateDeck() {
-	struct Deck deck;
-	// An UNO deck has 108 cards in total.
-	for (int i = 0; i < 108; i++) {
-		struct Card *card = malloc(sizeof(struct Card));
-		card->number = noNumber;
-		card->color = noColor;
-		card->turn_effect = noTurnEffect;
-		card->draw_effect = noDrawEffect;
-
-		if (i < 76) {
-			// Cards 1-76: 76 colored & numbered cards There are 19 of each color->
-			// These are numbered 0-9, with each color having one 0 and two of 1-9->
-			card->number = ceilf((i % 19) / 2.0);
-			card->color = i / 19;
-		} else if (i < 84) {
-			// Cards 77-84: 8 colored skip cards
-			card->turn_effect = skip;
-			card->color = (i - 76) / 2;
-		} else if (i < 92) {
-			// Cards 85-92: 8 colored reverse cards
-			card->turn_effect = reverse;
-			card->color = (i - 84) / 2;
-		} else if (i < 100) {
-			// Cards 93-100: 8 colored draw 2 cards
-			card->draw_effect = draw2;
-			card->color = (i - 92) / 2;
-		} else if (i < 104) {
-			// Cards 101-104: 4 wild cards
-			card->color = anyColor;
-		} else if (i < 108) {
-			// Cards 105-108: 4 wild draw 4 cards
-			card->color = anyColor;
-			card->draw_effect = draw4;
-		}
-		deck.cards[i] = card;
-	}
-	return deck;
 }
 
 struct CardArray CreateCardArray() {
@@ -240,6 +188,20 @@ void PrintCardStack(struct CardStack *stack) {
 	}
 }
 
+void ShuffleCardStack(struct CardStack *stack) {
+	if (stack->used == 0) {
+		return;
+	}
+	for (int i = 0; i < 100; i++) {
+		int card_a_position = RandomInt(0, stack->used - 1);
+		int card_b_position = RandomInt(0, stack->used - 1);
+		struct Card *card_a = stack->cards[card_a_position];
+		struct Card *card_b = stack->cards[card_b_position];
+		stack->cards[card_a_position] = card_b;
+		stack->cards[card_b_position] = card_a;
+	}
+}
+
 char *CreateCardLabel(struct Card card) {
 	char *color_label = ColorLabel(card.color);
 	char *number_label = NumberLabel(card.number);
@@ -261,27 +223,9 @@ void PrintCard(struct Card card) {
 	free(label);
 }
 
-void PrintDeck(struct Deck *deck) {
-	printf("Here's what we have in our cards...\n");
-	for (int i = 0; i < 108; i++) {
-		struct Card card = *deck->cards[i];
-		char *card_label = CreateCardLabel(card);
-		printf("Card #%i: %s\n", i+1, card_label);
-		free(card_label);
-	}
-}
-
-void ShuffleDeck(struct Deck *deck, int shuffles) {
-	for (int shuffle = 0; shuffle < shuffles; shuffle++) {
-		int card_a_position = RandomInt(0, 107);
-		int card_b_position = RandomInt(0,107);
-		struct Card *card_a = deck->cards[card_a_position];
-		struct Card *card_b = deck->cards[card_b_position];
-		deck->cards[card_a_position] = card_b;
-		deck->cards[card_b_position] = card_a;
-	}
-};
-
+/**
+ * Inclusive.
+ */
 int RandomInt(int min, int max) {
 	static bool seeded = false;
 	if (!seeded) {
