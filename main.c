@@ -59,6 +59,9 @@ bool IsEmptyCardStack(struct CardStack *stack);
 void PrintCardStack(struct CardStack *stack);
 void ShuffleCardStack(struct CardStack *stack);
 
+void DealCard(struct CardStack *deck, struct Player *player);
+void DealHand(struct CardStack *deck, struct Player *player);
+
 int RandomInt(int min, int max);
 
 int main() {
@@ -67,12 +70,15 @@ int main() {
 	for (int i = 0; i < sizeof uno_cards_data.cards / sizeof uno_cards_data.cards[0]; i++) {
 		PushCardStack(&deck, &uno_cards_data.cards[i]);
 	}
-
-	printf("Before:\n");
-	PrintCardStack(&deck);
-	printf("After:\n");
 	ShuffleCardStack(&deck);
-	PrintCardStack(&deck);
+
+	struct Player player = CreatePlayer();
+	printf("Before:\n");
+	PrintCardArray(&player.hand);
+	DealHand(&deck, &player);
+	printf("After:\n");
+	PrintCardArray(&player.hand);
+
 	return 0;
 }
 
@@ -199,6 +205,20 @@ void ShuffleCardStack(struct CardStack *stack) {
 		struct Card *card_b = stack->cards[card_b_position];
 		stack->cards[card_a_position] = card_b;
 		stack->cards[card_b_position] = card_a;
+	}
+}
+
+void DealCard(struct CardStack *deck, struct Player *player) {
+	if (deck->used == 0) {
+		// TODO: shuffle discard pile into deck
+	}
+	struct Card *drawn_card = PopCardStack(deck);
+	PushCardArray(&player->hand, drawn_card);
+}
+
+void DealHand(struct CardStack *deck, struct Player *player) {
+	while (player->hand.used < 7) {
+		DealCard(deck, player);
 	}
 }
 
