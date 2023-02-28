@@ -44,6 +44,8 @@ struct Player {
 	struct CardArray hand;
 };
 
+struct Player CreatePlayer();
+
 struct CardStack {
 	struct Card **cards;
 	size_t size;
@@ -70,8 +72,7 @@ int main() {
 		PushCardStack(&deck, &uno_cards_data.cards[i]);
 	}
 
-	struct Player player;
-	player.hand = CreateCardArray();
+	struct Player player = CreatePlayer();
 
 	int hand_size = 7;
 	for (int i = 0; i < hand_size; i++) {
@@ -191,6 +192,12 @@ void PrintCardArray(struct CardArray *array) {
 		printf("Card #%i: %s\n", i+1, card_label);
 		free(card_label);
 	}
+}
+
+struct Player CreatePlayer() {
+	struct Player player;
+	player.hand = CreateCardArray();
+	return player;
 }
 
 struct CardStack CreateCardStack() {

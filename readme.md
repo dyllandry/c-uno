@@ -4,6 +4,8 @@ Uno made with C!
 
 ## Todo
 
+- change ShuffleDeck to work with card stacks
+	- and remove old deck stuff
 - model player's hands
 - model the discard pile
 - model a series of turns including turns for players (skip npcs for now)
