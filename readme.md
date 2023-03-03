@@ -10,6 +10,14 @@ Uno made with C!
 	- [How to split a C program into multiple files?](https://stackoverflow.com/questions/5128664/how-to-split-a-c-program-into-multiple-files)
 	- [Compiling multiple C files with gcc](https://stackoverflow.com/questions/18777326/compiling-multiple-c-files-with-gcc)
 	- [Compiling multiple C files in a program](https://stackoverflow.com/questions/8728728/compiling-multiple-c-files-in-a-program)
+	- Add test.c file
+	- Add way of testing results
+		- keep it simple first
+		- need to show which tests pass and which fail
+		- Can't throw errors in C.
+		- like AssertEqual().
+		- Maybe a macro?
+	- Add shell script to run tests
 - model the discard pile
 - model playing a card
 	- CanPlayCard(discard_pile, card);
