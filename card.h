@@ -83,6 +83,9 @@ bool IsEmptyCardStack(struct CardStack *stack);
 void PrintCardStack(struct CardStack *stack);
 void ShuffleCardStack(struct CardStack *stack);
 
+void DealCard(struct CardStack *deck, struct CardArray *hand);
+void DealStartingHand(struct CardStack *deck, struct CardArray *hand);
+
 int RandomInt(int min, int max);
 
 #endif

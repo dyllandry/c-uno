@@ -11,9 +11,6 @@ struct Player {
 
 struct Player CreatePlayer();
 
-void DealCard(struct CardStack *deck, struct Player *player);
-void DealHand(struct CardStack *deck, struct Player *player);
-
 int main() {
 	struct UnoCardsData uno_cards_data = CreateUnoCardsData();
 	struct CardStack deck = CreateCardStack();
@@ -25,7 +22,7 @@ int main() {
 	struct Player player = CreatePlayer();
 	printf("Before:\n");
 	PrintCardArray(&player.hand);
-	DealHand(&deck, &player);
+	DealStartingHand(&deck, &player.hand);
 	printf("After:\n");
 	PrintCardArray(&player.hand);
 
@@ -36,19 +33,5 @@ struct Player CreatePlayer() {
 	struct Player player;
 	player.hand = CreateCardArray();
 	return player;
-}
-
-void DealCard(struct CardStack *deck, struct Player *player) {
-	if (deck->used == 0) {
-		// TODO: shuffle discard pile into deck
-	}
-	struct Card *drawn_card = PopCardStack(deck);
-	PushCardArray(&player->hand, drawn_card);
-}
-
-void DealHand(struct CardStack *deck, struct Player *player) {
-	while (player->hand.used < 7) {
-		DealCard(deck, player);
-	}
 }
 

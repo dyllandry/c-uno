@@ -209,3 +209,17 @@ struct UnoCardsData CreateUnoCardsData() {
   }
   return uno_cards_data;
 }
+
+void DealCard(struct CardStack *deck, struct CardArray *hand) {
+  if (deck->used == 0) {
+    // TODO: shuffle discard pile into deck
+  }
+  struct Card *drawn_card = PopCardStack(deck);
+  PushCardArray(hand, drawn_card);
+}
+
+void DealStartingHand(struct CardStack *deck, struct CardArray *hand) {
+  while (hand->used < 7) {
+    DealCard(deck, hand);
+  }
+}
