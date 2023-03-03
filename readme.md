@@ -4,6 +4,12 @@ Uno made with C!
 
 ## Todo
 
+- Add tests
+	- I'd like to have a test.c file that runs tests
+	- This means the game code will have to be in its own file that's includable by both main.c and test.c
+	- [How to split a C program into multiple files?](https://stackoverflow.com/questions/5128664/how-to-split-a-c-program-into-multiple-files)
+	- [Compiling multiple C files with gcc](https://stackoverflow.com/questions/18777326/compiling-multiple-c-files-with-gcc)
+	- [Compiling multiple C files in a program](https://stackoverflow.com/questions/8728728/compiling-multiple-c-files-in-a-program)
 - model the discard pile
 - model playing a card
 	- CanPlayCard(discard_pile, card);
