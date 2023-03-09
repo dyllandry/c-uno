@@ -2,6 +2,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+typedef bool (*TestFunction)();
+
+struct Test {
+  char *name;
+  bool (*function)();
+};
+
 bool test_can_play_card();
 bool test_can_play_card_can_play_blue1_on_red1();
 bool test_can_play_card_can_play_blue1_on_blue2();
@@ -13,8 +20,13 @@ bool test_can_play_card_can_play_wild_blue_on_blue_1();
 bool test_can_play_card_cannot_play_wild_blue_on_red_1();
 
 int main() {
-  bool all_tests_pass = test_can_play_card();
-  if (all_tests_pass) {
+
+  struct Test test;
+  test.name = "CanPlayCard()";
+  test.function = &test_can_play_card;
+
+  bool test_passes = (*test.function)();
+  if (test_passes) {
     printf("pass\n");
   } else {
     printf("fail\n");
