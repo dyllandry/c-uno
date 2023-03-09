@@ -51,6 +51,7 @@ struct Card {
   bool wild;
 };
 
+struct Card CreateCard();
 char *CreateCardLabel(struct Card card);
 void PrintCard(struct Card card);
 
@@ -85,6 +86,8 @@ void ShuffleCardStack(struct CardStack *stack);
 
 void DealCard(struct CardStack *deck, struct CardArray *hand);
 void DealStartingHand(struct CardStack *deck, struct CardArray *hand);
+
+bool CanPlayCard(struct Card *last_played_card, struct Card *card_to_play);
 
 int RandomInt(int min, int max);
 

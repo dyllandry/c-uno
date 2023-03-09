@@ -172,12 +172,7 @@ char *DrawEffectLabel(enum DrawEffect draw_effect) {
 struct UnoCardsData CreateUnoCardsData() {
   struct UnoCardsData uno_cards_data;
   for (int i = 0; i < 108; i++) {
-    struct Card new_card;
-    new_card.number = noNumber;
-    new_card.color = noColor;
-    new_card.turn_effect = noTurnEffect;
-    new_card.draw_effect = noDrawEffect;
-    new_card.wild = false;
+    struct Card new_card = CreateCard();
 
     if (i < 76) {
       // Cards 1-76: 76 colored & numbered cards There are 19 of each color.
@@ -221,4 +216,37 @@ void DealStartingHand(struct CardStack *deck, struct CardArray *hand) {
   while (hand->used < 7) {
     DealCard(deck, hand);
   }
+}
+
+bool CanPlayCard(struct Card *last_played_card, struct Card *card_to_play) {
+  if (card_to_play->number != noNumber &&
+      card_to_play->number == last_played_card->number) {
+    return true;
+  }
+  if (card_to_play->color != noColor &&
+      card_to_play->color == last_played_card->color) {
+    return true;
+  }
+  if (card_to_play->turn_effect != noTurnEffect &&
+      card_to_play->turn_effect == last_played_card->turn_effect) {
+    return true;
+  }
+  if (card_to_play->draw_effect != noDrawEffect &&
+      card_to_play->draw_effect == last_played_card->draw_effect) {
+    return true;
+  }
+  if (card_to_play->wild) {
+    return true;
+  }
+  return false;
+}
+
+struct Card CreateCard() {
+  struct Card card;
+  card.number = noNumber;
+  card.color = noColor;
+  card.draw_effect = noDrawEffect;
+  card.turn_effect = noTurnEffect;
+  card.wild = false;
+  return card;
 }
