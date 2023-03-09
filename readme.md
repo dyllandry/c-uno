@@ -4,6 +4,7 @@ Uno made with C!
 
 ## Todo
 
+- Properly model wild cards
 - Add tests
 	- I'd like to have a test.c file that runs tests
 	- This means the game code will have to be in its own file that's includable by both main.c and test.c
