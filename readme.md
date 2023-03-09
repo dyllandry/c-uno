@@ -8,8 +8,21 @@ Uno made with C!
 	- Add way of testing results
 		- keep it simple first
 		- need to show which tests pass and which fail
-		- maybe can model a test as a function pointer and a test name.
-				- then run all tests in an array. Print the name of those that failed.
+		- model test as struct with name & pointer to function to run test
+		- add tests by adding struct to array of tests
+		- those tests are all run, and their results are collected.
+		- result is name of test and bool for whether it passed
+		- the tests that pass are printed first, the tests that fail are printed second
+		- maybe somehow a macro could make adding a test easier
+			- currently would require a few steps:
+				- add a test function forward declaration
+				- define function
+				- add test & name to array of tests
+			- maybe somehow a macro could take the function name from the definition, and use that to
+				- generate a name for the test that's just the function name
+				- make the function pointer
+				- compose the test struct
+				- add the test to the array of tests
 - model the discard pile
 - model playing a card
 	- CanPlayCard(discard_pile, card);
