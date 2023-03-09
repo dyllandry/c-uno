@@ -133,8 +133,6 @@ char *ColorLabel(enum Color color) {
     return "green";
   } else if (color == yellow) {
     return "yellow";
-  } else if (color == anyColor) {
-    return "wild";
   } else {
     return "";
   }
@@ -179,6 +177,7 @@ struct UnoCardsData CreateUnoCardsData() {
     new_card.color = noColor;
     new_card.turn_effect = noTurnEffect;
     new_card.draw_effect = noDrawEffect;
+    new_card.wild = false;
 
     if (i < 76) {
       // Cards 1-76: 76 colored & numbered cards There are 19 of each color.
@@ -199,10 +198,10 @@ struct UnoCardsData CreateUnoCardsData() {
       new_card.color = (i - 92) / 2;
     } else if (i < 104) {
       // Cards 101-104: 4 wild cards
-      new_card.color = anyColor;
+      new_card.wild = true;
     } else if (i < 108) {
       // Cards 105-108: 4 wild draw 4 cards
-      new_card.color = anyColor;
+      new_card.wild = true;
       new_card.draw_effect = draw4;
     }
     uno_cards_data.cards[i] = new_card;

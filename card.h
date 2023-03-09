@@ -1,15 +1,14 @@
 #ifndef CARD_H_INCLUDED
 #define CARD_H_INCLUDED
 
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 enum Color {
   blue,
   red,
   green,
   yellow,
-  anyColor,
   noColor,
 };
 
@@ -49,13 +48,14 @@ struct Card {
   enum Color color;
   enum TurnEffect turn_effect;
   enum DrawEffect draw_effect;
+  bool wild;
 };
 
 char *CreateCardLabel(struct Card card);
 void PrintCard(struct Card card);
 
 struct UnoCardsData {
-	struct Card cards[108];
+  struct Card cards[108];
 };
 
 struct UnoCardsData CreateUnoCardsData();

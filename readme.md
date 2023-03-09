@@ -4,7 +4,6 @@ Uno made with C!
 
 ## Todo
 
-- Properly model wild cards
 - Add tests
 	- I'd like to have a test.c file that runs tests
 	- This means the game code will have to be in its own file that's includable by both main.c and test.c
@@ -28,6 +27,7 @@ Uno made with C!
 
 ## Todo History
 
+- *2023-03-08*: model wild cards using own flag
 - *2023-02-28*: add DealCard() and DealHand()
 - *2023-02-28*: change ShuffleDeck to work with card stacks
 - *2023-02-23*: change CardArray to not be a dynamic array of cards, but instead a dynamic array of pointers to cards.
