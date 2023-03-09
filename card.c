@@ -235,9 +235,6 @@ bool CanPlayCard(struct Card *last_played_card, struct Card *card_to_play) {
       card_to_play->draw_effect == last_played_card->draw_effect) {
     return true;
   }
-  if (card_to_play->wild) {
-    return true;
-  }
   return false;
 }
 
