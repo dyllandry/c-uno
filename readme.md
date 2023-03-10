@@ -9,9 +9,7 @@ Uno made with C!
 		- keep it simple first
 		- need to show which tests pass and which fail
 		- model test as struct with name & pointer to function to run test
-		- add tests by adding struct to array of tests
-			- implement generic array
-			- https://stackoverflow.com/questions/37496282/c-generic-array-implementation
+		- (NEXT) add tests by adding struct to array of tests
 		- those tests are all run, and their results are collected.
 		- result is name of test and bool for whether it passed
 		- the tests that pass are printed first, the tests that fail are printed second
