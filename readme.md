@@ -13,6 +13,13 @@ Uno made with C!
 - design game loop
 - model a series of turns including turns for players (skip npcs for now)
 
+## Big things left
+
+- Keyboard Input
+- ui
+- game loop
+- Computer Players
+
 ## Todo History
 
 - *2023-03-10*: make testing system print passing and failing tests
