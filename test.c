@@ -1,6 +1,8 @@
+#include "array.h"
 #include "card.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 typedef bool (*TestFunction)();
 
@@ -19,19 +21,71 @@ bool test_can_play_card_cannot_play_blue_skip_on_red_draw_2();
 bool test_can_play_card_can_play_wild_blue_on_blue_1();
 bool test_can_play_card_cannot_play_wild_blue_on_red_1();
 
+bool test_array();
+bool test_array_push_int();
+bool test_array_push_string();
+bool test_array_get_element_array();
+
 int main() {
 
-  struct Test test;
-  test.name = "CanPlayCard()";
-  test.function = &test_can_play_card;
+  struct Test can_play_card_test;
+  can_play_card_test.name = "CanPlayCard()";
+  can_play_card_test.function = &test_can_play_card;
 
-  bool test_passes = (*test.function)();
+  struct Test array_test;
+  array_test.name = "Array Test";
+  array_test.function = &test_array;
+
+  struct Test tests[2];
+  tests[0] = can_play_card_test;
+  tests[1] = array_test;
+
+  bool test_passes = (*tests[0].function)() && (*tests[1].function)();
   if (test_passes) {
     printf("pass\n");
   } else {
     printf("fail\n");
   }
   return 0;
+}
+
+bool test_array() {
+  return test_array_push_int() && test_array_push_string() &&
+         test_array_get_element_array();
+}
+
+bool test_array_push_int() {
+  struct Array array = CreateArray(sizeof(int));
+  int year = 2023;
+  int month = 4;
+  PushArray(&array, &year);
+  PushArray(&array, &month);
+  int received_year = ((int *)array.elements)[0];
+  int received_month = ((int *)array.elements)[1];
+  return received_year == year && received_month == month;
+}
+
+bool test_array_push_string() {
+  struct Array array = CreateArray(sizeof(char *));
+  char *first_name = "dylan";
+  char *last_name = "landry";
+  PushArray(&array, &first_name);
+  PushArray(&array, &last_name);
+  char *received_first_name = ((char **)array.elements)[0];
+  char *received_last_name = ((char **)array.elements)[1];
+  return strcmp(received_first_name, first_name) == 0 &&
+         strcmp(received_last_name, last_name) == 0;
+}
+
+bool test_array_get_element_array() {
+  struct Array array = CreateArray(sizeof(int));
+  int year = 2023;
+  int month = 4;
+  PushArray(&array, &year);
+  PushArray(&array, &month);
+  int *received_year = GetElementArray(&array, 0);
+  int *received_month = GetElementArray(&array, 1);
+  return *received_year == year && *received_month == month;
 }
 
 bool test_can_play_card() {
