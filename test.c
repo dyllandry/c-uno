@@ -6,10 +6,20 @@
 
 typedef bool (*TestFunction)();
 
+enum TestResult {
+  passResult,
+  failResult,
+  noResult,
+};
+
 struct Test {
   char *name;
-  bool (*function)();
+  TestFunction function;
+  enum TestResult result;
 };
+
+struct Test CreateTest(char *name, bool (*function)());
+void AddTestToTests(struct Array *tests, char *name, bool (*function)());
 
 bool test_can_play_card();
 bool test_can_play_card_can_play_blue1_on_red1();
@@ -27,26 +37,79 @@ bool test_array_push_string();
 bool test_array_get_element_array();
 
 int main() {
+  struct Array tests = CreateArray(sizeof(struct Test));
 
-  struct Test can_play_card_test;
-  can_play_card_test.name = "CanPlayCard()";
-  can_play_card_test.function = &test_can_play_card;
+  AddTestToTests(&tests, "CanPlayCard(): can play blue 1 on red 1",
+                 &test_can_play_card_can_play_blue1_on_red1);
+  AddTestToTests(&tests, "CanPlayCard(): can play blue 1 on blue 2",
+                 &test_can_play_card_can_play_blue1_on_blue2);
+  AddTestToTests(&tests, "CanPlayCard(): cannot play blue 1 on red 2",
+                 &test_can_play_card_cannot_play_blue1_on_red2);
+  AddTestToTests(&tests, "CanPlayCard(): can play blue skip on red skip",
+                 &test_can_play_card_can_play_blue_skip_on_red_skip);
+  AddTestToTests(&tests, "CanPlayCard(): can play blue draw 2 on red draw 2",
+                 &test_can_play_card_can_play_blue_draw_2_on_red_draw_2);
+  AddTestToTests(&tests, "CanPlayCard(): cannot play blue skip on red draw 2",
+                 &test_can_play_card_cannot_play_blue_skip_on_red_draw_2);
+  AddTestToTests(&tests, "CanPlayCard(): can play wild blue on blue 1",
+                 &test_can_play_card_can_play_wild_blue_on_blue_1);
+  AddTestToTests(&tests, "CanPlayCard(): cannot play wild blue on red 1",
+                 &test_can_play_card_cannot_play_wild_blue_on_red_1);
+  AddTestToTests(
+      &tests, "PushArray(): can push an int, then get it back by manual access",
+      &test_array_push_int);
+  AddTestToTests(
+      &tests,
+      "PushArray(): can push a string, then get it back by manual access",
+      &test_array_push_string);
+  AddTestToTests(&tests, "GetElementArray(): can get an element ",
+                 &test_array_get_element_array);
 
-  struct Test array_test;
-  array_test.name = "Array Test";
-  array_test.function = &test_array;
-
-  struct Test tests[2];
-  tests[0] = can_play_card_test;
-  tests[1] = array_test;
-
-  bool test_passes = (*tests[0].function)() && (*tests[1].function)();
-  if (test_passes) {
-    printf("pass\n");
-  } else {
-    printf("fail\n");
+  printf("running %zu tests\n", tests.used);
+  for (int i = 0; i < tests.used; i++) {
+    struct Test *test = GetElementArray(&tests, i);
+    bool pass = (*test->function)();
+    enum TestResult result;
+    if (pass) {
+      result = passResult;
+    } else {
+      result = failResult;
+    }
+    test->result = result;
   }
+
+  printf("\n");
+
+  for (int i = 0; i < tests.used; i++) {
+    struct Test *test = GetElementArray(&tests, i);
+    if (test->result == passResult) {
+      printf("PASS %s\n", test->name);
+    }
+  }
+
+  printf("\n");
+
+  for (int i = 0; i < tests.used; i++) {
+    struct Test *test = GetElementArray(&tests, i);
+    if (test->result == failResult) {
+      printf("FAIL %s\n", test->name);
+    }
+  }
+
   return 0;
+}
+
+struct Test CreateTest(char *name, bool (*function)()) {
+  struct Test test;
+  test.name = name;
+  test.function = function;
+  test.result = noResult;
+  return test;
+}
+
+void AddTestToTests(struct Array *tests, char *name, bool (*function)()) {
+  struct Test test = CreateTest(name, function);
+  PushArray(tests, &test);
 }
 
 bool test_array() {
