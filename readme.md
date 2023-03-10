@@ -4,34 +4,19 @@ Uno made with C!
 
 ## Todo
 
-- Add tests
-	- Add way of testing results
-		- keep it simple first
-		- need to show which tests pass and which fail
-		- model test as struct with name & pointer to function to run test
-		- (NEXT) add tests by adding struct to array of tests
-		- those tests are all run, and their results are collected.
-		- result is name of test and bool for whether it passed
-		- the tests that pass are printed first, the tests that fail are printed second
-		- maybe somehow a macro could make adding a test easier
-			- currently would require a few steps:
-				- add a test function forward declaration
-				- define function
-				- add test & name to array of tests
-			- maybe somehow a macro could take the function name from the definition, and use that to
-				- generate a name for the test that's just the function name
-				- make the function pointer
-				- compose the test struct
-				- add the test to the array of tests
-- model the discard pile
-- model playing a card
-	- CanPlayCard(discard_pile, card);
+- think about moving CardArray to instead use Array
+	- ex: Player { struct Array cards; }
+- think about moving CardStack to instead use Array
+	- could just add pop and peek methods to support use case
+- design playing a card
 	- PlayCard()
 - design game loop
 - model a series of turns including turns for players (skip npcs for now)
 
 ## Todo History
 
+- *2023-03-10*: make testing system print passing and failing tests
+- *2023-03-10*: add generic array
 - *2023-03-08*: add CanPlayCard and start of testing system
 - *2023-03-08*: model wild cards using own flag
 - *2023-02-28*: add DealCard() and DealHand()
