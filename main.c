@@ -1,37 +1,38 @@
+#include "array.h"
+#include "card.h"
+#include <math.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <time.h>
-#include "card.h"
-#include <stdbool.h>
 
 struct Player {
-	struct CardArray hand;
+  struct CardArray hand;
 };
 
 struct Player CreatePlayer();
 
 int main() {
-	struct UnoCardsData uno_cards_data = CreateUnoCardsData();
-	struct CardStack deck = CreateCardStack();
-	for (int i = 0; i < sizeof uno_cards_data.cards / sizeof uno_cards_data.cards[0]; i++) {
-		PushCardStack(&deck, &uno_cards_data.cards[i]);
-	}
-	ShuffleCardStack(&deck);
+  struct Card card = CreateCard();
+  card.number = five;
+  card.color = red;
+  struct Card card_2 = CreateCard();
+  card_2.number = three;
+  card_2.color = blue;
+  struct Card card_3 = CreateCard();
+  card_3.number = seven;
+  card_3.color = yellow;
 
-	struct Player player = CreatePlayer();
-	printf("Before:\n");
-	PrintCardArray(&player.hand);
-	DealStartingHand(&deck, &player.hand);
-	printf("After:\n");
-	PrintCardArray(&player.hand);
+  struct Array cards = CreateArray(sizeof(struct Card));
+  PushArray(&cards, &card);
+  PushArray(&cards, &card_2);
+  PushArray(&cards, &card_3);
 
-	return 0;
+	PrintCards(&cards);
 }
 
 struct Player CreatePlayer() {
-	struct Player player;
-	player.hand = CreateCardArray();
-	return player;
+  struct Player player;
+  player.hand = CreateCardArray();
+  return player;
 }
-

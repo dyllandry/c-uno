@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "array.h"
 
 enum Color {
   blue,
@@ -69,7 +70,7 @@ struct CardArray {
 
 struct CardArray CreateCardArray();
 void PushCardArray(struct CardArray *array, struct Card *card);
-void PrintCardArray(struct CardArray *array);
+void PrintCards(struct Array *array);
 
 struct CardStack {
   struct Card **cards;

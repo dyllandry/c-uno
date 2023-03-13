@@ -1,4 +1,5 @@
 #include "card.h"
+#include "array.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,12 +23,10 @@ void PushCardArray(struct CardArray *array, struct Card *card) {
   array->used++;
 }
 
-void PrintCardArray(struct CardArray *array) {
-  printf("Cards in array...\n");
+void PrintCards(struct Array *array) {
   for (int i = 0; i < array->used; i++) {
-    char *card_label = CreateCardLabel(*array->cards[i]);
-    printf("Card #%i: %s\n", i + 1, card_label);
-    free(card_label);
+    struct Card *card = GetElementArray(array, i);
+    PrintCard(*card);
   }
 }
 
