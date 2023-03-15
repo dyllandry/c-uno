@@ -5,24 +5,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-struct CardArray CreateCardArray() {
-  struct CardArray array;
-  array.size = 1;
-  array.used = 0;
-  array.cards = malloc(array.size * sizeof(*array.cards));
-  array.cards[0] = 0;
-  return array;
-}
-
-void PushCardArray(struct CardArray *array, struct Card *card) {
-  if (array->used == array->size) {
-    array->size *= 2;
-    array->cards = realloc(array->cards, array->size * sizeof(*array->cards));
-  }
-  array->cards[array->used] = card;
-  array->used++;
-}
-
 void PrintCards(struct Array *array) {
   for (int i = 0; i < array->used; i++) {
     struct Card *card = GetElementArray(array, i);

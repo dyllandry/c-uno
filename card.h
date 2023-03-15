@@ -63,14 +63,6 @@ struct UnoCardsData {
 
 struct UnoCardsData CreateUnoCardsData();
 
-struct CardArray {
-  struct Card **cards;
-  size_t size;
-  size_t used;
-};
-
-struct CardArray CreateCardArray();
-void PushCardArray(struct CardArray *array, struct Card *card);
 void PrintCards(struct Array *array);
 
 struct CardStack {
