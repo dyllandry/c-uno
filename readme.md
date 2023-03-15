@@ -4,8 +4,6 @@ Uno made with C!
 
 ## Todo
 
-- think about moving CardArray to instead use Array
-	- ex: Player { struct Array cards; }
 - think about moving CardStack to instead use Array
 	- could just add pop and peek methods to support use case
 - design playing a card
@@ -22,6 +20,7 @@ Uno made with C!
 
 ## Todo History
 
+- *2023-03-15*: replace CardArray with new generic Array
 - *2023-03-10*: make testing system print passing and failing tests
 - *2023-03-10*: add generic array
 - *2023-03-08*: add CanPlayCard and start of testing system
