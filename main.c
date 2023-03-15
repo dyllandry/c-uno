@@ -14,15 +14,18 @@ struct Player CreatePlayer();
 
 int main() {
   struct UnoCardsData uno_cards_data = CreateUnoCardsData();
-  struct CardStack deck = CreateCardStack();
+  struct Array deck = CreateArray(sizeof(struct Card));
   for (int i = 0;
        i < sizeof(uno_cards_data.cards) / sizeof(uno_cards_data.cards[0]);
        i++) {
-    PushCardStack(&deck, &uno_cards_data.cards[i]);
+    PushArray(&deck, &uno_cards_data.cards[i]);
   }
-  ShuffleCardStack(&deck);
+  ShuffleCards(&deck);
   struct Player player = CreatePlayer();
-  DealStartingHand(&deck, &player.hand);
+  for (int i = 0; i < 5; i++) {
+    struct Card card = ((struct Card *)deck.elements)[i];
+    PushArray(&player.hand, &card);
+  }
   PrintCards(&player.hand);
 }
 

@@ -76,7 +76,7 @@ void PushCardStack(struct CardStack *stack, struct Card *card);
 struct Card *PopCardStack(struct CardStack *stack);
 bool IsEmptyCardStack(struct CardStack *stack);
 void PrintCardStack(struct CardStack *stack);
-void ShuffleCardStack(struct CardStack *stack);
+void ShuffleCards(struct Array *cards);
 
 void DealCard(struct CardStack *deck, struct Array *hand);
 void DealStartingHand(struct CardStack *deck, struct Array *hand);

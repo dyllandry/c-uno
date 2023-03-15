@@ -50,17 +50,14 @@ void PrintCardStack(struct CardStack *stack) {
   }
 }
 
-void ShuffleCardStack(struct CardStack *stack) {
-  if (stack->used == 0) {
-    return;
-  }
-  for (int i = 0; i < 100; i++) {
-    int card_a_position = RandomInt(0, stack->used - 1);
-    int card_b_position = RandomInt(0, stack->used - 1);
-    struct Card *card_a = stack->cards[card_a_position];
-    struct Card *card_b = stack->cards[card_b_position];
-    stack->cards[card_a_position] = card_b;
-    stack->cards[card_b_position] = card_a;
+void ShuffleCards(struct Array *cards) {
+  for (int i = 0; i < cards->used; i++) {
+    int card_a_position = RandomInt(0, cards->used - 1);
+    int card_b_position = RandomInt(0, cards->used - 1);
+    struct Card *card_a = GetElementArray(cards, card_a_position);
+    struct Card *card_b = GetElementArray(cards, card_b_position);
+    ((struct Card *)cards->elements)[card_a_position] = *card_b;
+    ((struct Card *)cards->elements)[card_b_position] = *card_a;
   }
 }
 
