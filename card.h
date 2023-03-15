@@ -40,6 +40,7 @@ enum DrawEffect {
 };
 
 char *ColorLabel(enum Color color);
+char *WildLabel(bool wild);
 char *NumberLabel(enum Number number);
 char *TurnEffectLabel(enum TurnEffect turn_effect);
 char *DrawEffectLabel(enum DrawEffect draw_effect);
@@ -85,8 +86,8 @@ bool IsEmptyCardStack(struct CardStack *stack);
 void PrintCardStack(struct CardStack *stack);
 void ShuffleCardStack(struct CardStack *stack);
 
-void DealCard(struct CardStack *deck, struct CardArray *hand);
-void DealStartingHand(struct CardStack *deck, struct CardArray *hand);
+void DealCard(struct CardStack *deck, struct Array *hand);
+void DealStartingHand(struct CardStack *deck, struct Array *hand);
 
 bool CanPlayCard(struct Card *last_played_card, struct Card *card_to_play);
 

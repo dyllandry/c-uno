@@ -85,20 +85,21 @@ void ShuffleCardStack(struct CardStack *stack) {
 char *CreateCardLabel(struct Card card) {
   char *color_label = ColorLabel(card.color);
   char *number_label = NumberLabel(card.number);
+  char *wild_label = WildLabel(card.wild);
   char *turn_effect_label = TurnEffectLabel(card.turn_effect);
   char *draw_effect_label = DrawEffectLabel(card.draw_effect);
-  char *format = "%s %s %s %s";
+  char *format = "%s %s %s %s %s";
   // snprintf returns number of bytes to be written
   // passing NULL for char buffer and 0 for bufsz will make it skip writing any
   // data
   size_t card_label_length =
-      snprintf(NULL, 0, format, color_label, number_label, turn_effect_label,
-               draw_effect_label);
+      snprintf(NULL, 0, format, color_label, number_label, wild_label,
+               turn_effect_label, draw_effect_label);
   char *card_label = malloc(1 + card_label_length);
   // here we actually write the char string to the buffer along with the needed
   // bufsz
   snprintf(card_label, 1 + card_label_length, format, color_label, number_label,
-           turn_effect_label, draw_effect_label);
+           wild_label, turn_effect_label, draw_effect_label);
   return card_label;
 }
 
@@ -146,6 +147,13 @@ char *NumberLabel(enum Number number) {
     snprintf(number_label, 1 + label_length, "%i", number);
     return number_label;
   }
+}
+
+char *WildLabel(bool wild) {
+  if (wild) {
+    return "wild";
+  }
+  return "";
 }
 
 char *TurnEffectLabel(enum TurnEffect turn_effect) {
@@ -203,15 +211,15 @@ struct UnoCardsData CreateUnoCardsData() {
   return uno_cards_data;
 }
 
-void DealCard(struct CardStack *deck, struct CardArray *hand) {
+void DealCard(struct CardStack *deck, struct Array *hand) {
   if (deck->used == 0) {
     // TODO: shuffle discard pile into deck
   }
   struct Card *drawn_card = PopCardStack(deck);
-  PushCardArray(hand, drawn_card);
+  PushArray(hand, drawn_card);
 }
 
-void DealStartingHand(struct CardStack *deck, struct CardArray *hand) {
+void DealStartingHand(struct CardStack *deck, struct Array *hand) {
   while (hand->used < 7) {
     DealCard(deck, hand);
   }
