@@ -21,7 +21,6 @@ struct Test {
 struct Test CreateTest(char *name, bool (*function)());
 void AddTestToTests(struct Array *tests, char *name, bool (*function)());
 
-bool test_can_play_card();
 bool test_can_play_card_can_play_blue1_on_red1();
 bool test_can_play_card_can_play_blue1_on_blue2();
 bool test_can_play_card_cannot_play_blue1_on_red2();
@@ -31,10 +30,10 @@ bool test_can_play_card_cannot_play_blue_skip_on_red_draw_2();
 bool test_can_play_card_can_play_wild_blue_on_blue_1();
 bool test_can_play_card_cannot_play_wild_blue_on_red_1();
 
-bool test_array();
 bool test_array_push_int();
 bool test_array_push_string();
 bool test_array_get_element_array();
+bool test_array_pop_array();
 
 int main() {
   struct Array tests = CreateArray(sizeof(struct Test));
@@ -62,8 +61,10 @@ int main() {
       &tests,
       "PushArray(): can push a string, then get it back by manual access",
       &test_array_push_string);
-  AddTestToTests(&tests, "GetElementArray(): can get an element ",
+  AddTestToTests(&tests, "GetElementArray(): can get an element",
                  &test_array_get_element_array);
+  AddTestToTests(&tests, "PopArray(): can pop an element",
+                 &test_array_pop_array);
 
   printf("running %zu tests\n", tests.used);
   for (int i = 0; i < tests.used; i++) {
@@ -112,11 +113,6 @@ void AddTestToTests(struct Array *tests, char *name, bool (*function)()) {
   PushArray(tests, &test);
 }
 
-bool test_array() {
-  return test_array_push_int() && test_array_push_string() &&
-         test_array_get_element_array();
-}
-
 bool test_array_push_int() {
   struct Array array = CreateArray(sizeof(int));
   int year = 2023;
@@ -151,16 +147,7 @@ bool test_array_get_element_array() {
   return *received_year == year && *received_month == month;
 }
 
-bool test_can_play_card() {
-  return test_can_play_card_can_play_blue1_on_red1() &&
-         test_can_play_card_can_play_blue1_on_blue2() &&
-         test_can_play_card_cannot_play_blue1_on_red2() &&
-         test_can_play_card_can_play_blue_skip_on_red_skip() &&
-         test_can_play_card_can_play_blue_draw_2_on_red_draw_2() &&
-         test_can_play_card_cannot_play_blue_skip_on_red_draw_2() &&
-         test_can_play_card_can_play_wild_blue_on_blue_1() &&
-         test_can_play_card_cannot_play_wild_blue_on_red_1();
-}
+bool test_array_pop_array() {}
 
 bool test_can_play_card_can_play_blue1_on_red1() {
   struct Card blue_1 = CreateCard();

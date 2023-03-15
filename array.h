@@ -13,5 +13,6 @@ struct Array {
 struct Array CreateArray(size_t element_size);
 void PushArray(struct Array *array, void *element);
 void *GetElementArray(struct Array *array, int element);
+void *PopArray(struct Array *array);
 
 #endif

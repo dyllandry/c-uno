@@ -26,3 +26,11 @@ void PushArray(struct Array *array, void *element) {
 void *GetElementArray(struct Array *array, int index) {
   return (array->elements + (array->element_size * index));
 }
+
+void *PopArray(struct Array *array) {
+  if (array->used == 0) {
+    return 0;
+  }
+  size_t last_element_offset = array->element_size * (array->used - 1);
+  return array->elements + last_element_offset;
+}
