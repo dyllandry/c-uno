@@ -7,7 +7,7 @@
 #include <time.h>
 
 struct Player {
-  struct CardArray hand;
+  struct Array hand;
 };
 
 struct Player CreatePlayer();
@@ -20,13 +20,14 @@ int main() {
        i++) {
     PushCardStack(&deck, &uno_cards_data.cards[i]);
   }
-  struct Array hand = CreateArray(sizeof(struct Card));
-  DealStartingHand(&deck, &hand);
-  PrintCards(&hand);
+  ShuffleCardStack(&deck);
+  struct Player player = CreatePlayer();
+  DealStartingHand(&deck, &player.hand);
+  PrintCards(&player.hand);
 }
 
 struct Player CreatePlayer() {
   struct Player player;
-  player.hand = CreateCardArray();
+  player.hand = CreateArray(sizeof(struct Card));
   return player;
 }
